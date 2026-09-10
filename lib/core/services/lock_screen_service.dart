@@ -17,6 +17,12 @@ abstract final class LockScreenService {
     await _invoke<void>('setShowWhenLocked', {'enabled': enabled});
   }
 
+  /// Whether the device is currently showing over the lock screen.
+  static Future<bool> isKeyguardLocked() async {
+    final bool? result = await _invoke<bool>('isKeyguardLocked');
+    return result ?? false;
+  }
+
   /// Whether the app may start itself over the keyguard. Without it Android
   /// blocks the activity start that replaces the lock screen.
   static Future<bool> canDrawOverlays() async {

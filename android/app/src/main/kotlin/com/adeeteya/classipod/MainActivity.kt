@@ -3,6 +3,7 @@ package com.adeeteya.classipod
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.app.KeyguardManager
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
@@ -35,6 +36,7 @@ class MainActivity : AudioServiceActivity() {
                     applyShowWhenLocked(enabled)
                     result.success(null)
                 }
+                "isKeyguardLocked" -> result.success(isKeyguardLocked())
                 "canDrawOverlays" -> result.success(canDrawOverlays())
                 "requestDrawOverlays" -> {
                     requestDrawOverlays()
@@ -110,6 +112,12 @@ class MainActivity : AudioServiceActivity() {
             )
         }
         runCatching { context.startActivity(intent) }
+    }
+
+    private fun isKeyguardLocked(): Boolean {
+        val keyguardManager =
+            getSystemService(KEYGUARD_SERVICE) as? KeyguardManager
+        return keyguardManager?.isKeyguardLocked ?: false
     }
 
     private fun canDrawOverlays(): Boolean = Settings.canDrawOverlays(this)

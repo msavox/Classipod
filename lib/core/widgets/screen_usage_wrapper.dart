@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:classipod/core/providers/device_appearance_provider.dart';
+import 'package:classipod/core/services/lock_screen_service.dart';
+import 'package:classipod/core/widgets/lock_screen_clock.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
@@ -9,6 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Restricts the app to the bottom `screenUsagePercentage` of the available
 /// height and paints the unused area at the top solid black.
+///
+/// While the device stands in for the lock screen, that area shows a clock,
+/// since the system one is not on screen then.
 class ScreenUsageWrapper extends ConsumerWidget {
   final Widget child;
 
@@ -48,6 +53,16 @@ class ScreenUsageWrapper extends ConsumerWidget {
     // insets it was compensating for have to be removed from the child.
     double shrinkTop(double inset) => math.max(0, inset - blackedOutHeight);
 
+    final bool showOnLockScreen = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.showOnLockScreen,
+      ),
+    );
+    final String languageLocaleCode = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.languageLocaleCode,
+      ),
+    );
     final bool keepsWallpaper = ref.watch(
       settingsPreferencesControllerProvider.select(
         (settings) => settings.screenUsageKeepsWallpaper,
@@ -61,7 +76,15 @@ class ScreenUsageWrapper extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: blackedOutHeight),
+          SizedBox(
+            height: blackedOutHeight,
+            child: showOnLockScreen && LockScreenService.isSupported
+                ? SafeArea(
+                    bottom: false,
+                    child: LockScreenClock(localeName: languageLocaleCode),
+                  )
+                : null,
+          ),
           SizedBox(
             height: usedHeight,
             child: MediaQuery(
