@@ -3,7 +3,7 @@ import 'package:classipod/features/custom_screen_elements/custom_screen.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
-import 'package:classipod/features/settings/widgets/settings_list_tile.dart';
+import 'package:classipod/features/settings/widgets/selection_list_tile.dart';
 import 'package:classipod/features/status_bar/widgets/status_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +52,12 @@ class _ScreenUsageSelectionScreenState extends ConsumerState with CustomScreen {
 
   @override
   Widget build(BuildContext context) {
+    final int currentPercentage = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.screenUsagePercentage,
+      ),
+    );
+
     return CupertinoPageScaffold(
       child: Column(
         children: [
@@ -62,14 +68,15 @@ class _ScreenUsageSelectionScreenState extends ConsumerState with CustomScreen {
               child: ListView.builder(
                 controller: scrollController,
                 itemCount: displayItems.length,
-                prototypeItem: SettingsListTile(
+                prototypeItem: SelectionListTile(
                   text: '',
                   isSelected: false,
                   onTap: () {},
                 ),
-                itemBuilder: (context, index) => SettingsListTile(
+                itemBuilder: (context, index) => SelectionListTile(
                   text: ScreenUsage.title(displayItems[index]),
                   isSelected: selectedDisplayItem == index,
+                  isActive: displayItems[index] == currentPercentage,
                   onTap: () async => _selectScreenUsage(index),
                 ),
               ),

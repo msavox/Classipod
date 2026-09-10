@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:classipod/core/providers/device_appearance_provider.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
@@ -47,8 +48,16 @@ class ScreenUsageWrapper extends ConsumerWidget {
     // insets it was compensating for have to be removed from the child.
     double shrinkTop(double inset) => math.max(0, inset - blackedOutHeight);
 
-    return ColoredBox(
-      color: CupertinoColors.black,
+    final bool keepsWallpaper = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.screenUsageKeepsWallpaper,
+      ),
+    );
+
+    return DecoratedBox(
+      decoration: keepsWallpaper
+          ? ref.watch(deviceAppearanceProvider).frameDecoration
+          : const BoxDecoration(color: CupertinoColors.black),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

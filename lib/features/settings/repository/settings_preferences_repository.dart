@@ -5,6 +5,7 @@ import 'package:classipod/features/settings/models/app_theme.dart';
 import 'package:classipod/features/settings/models/click_wheel_sensitivity.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/device_color.dart';
+import 'package:classipod/features/settings/models/device_finish.dart';
 import 'package:classipod/features/settings/models/repeat_mode.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
 import 'package:classipod/features/settings/models/volume_mode.dart';
@@ -129,6 +130,32 @@ class SettingsPreferencesRepository {
         false;
   }
 
+  String getDeviceFinish() {
+    return _sharedPreferencesWithCache.getString(
+          SharedPreferencesKeys.deviceFinish.name,
+        ) ??
+        DeviceFinish.classic.name;
+  }
+
+  int? getCustomDeviceColorValue() {
+    return _sharedPreferencesWithCache.getInt(
+      SharedPreferencesKeys.customDeviceColor.name,
+    );
+  }
+
+  String? getDeviceTexture() {
+    return _sharedPreferencesWithCache.getString(
+      SharedPreferencesKeys.deviceTexture.name,
+    );
+  }
+
+  bool getScreenUsageKeepsWallpaper() {
+    return _sharedPreferencesWithCache.getBool(
+          SharedPreferencesKeys.screenUsageKeepsWallpaper.name,
+        ) ??
+        false;
+  }
+
   Future<void> setLanguageLocaleCode({
     required String languageLocaleCode,
   }) async {
@@ -225,6 +252,46 @@ class SettingsPreferencesRepository {
     return _sharedPreferencesWithCache.setString(
       SharedPreferencesKeys.musicRootPath.name,
       musicRootPath,
+    );
+  }
+
+  Future<void> setDeviceFinish({required String deviceFinishName}) async {
+    return _sharedPreferencesWithCache.setString(
+      SharedPreferencesKeys.deviceFinish.name,
+      deviceFinishName,
+    );
+  }
+
+  Future<void> setCustomDeviceColorValue({required int? colorValue}) async {
+    if (colorValue == null) {
+      return _sharedPreferencesWithCache.remove(
+        SharedPreferencesKeys.customDeviceColor.name,
+      );
+    }
+    return _sharedPreferencesWithCache.setInt(
+      SharedPreferencesKeys.customDeviceColor.name,
+      colorValue,
+    );
+  }
+
+  Future<void> setDeviceTexture({required String? deviceTexture}) async {
+    if (deviceTexture == null) {
+      return _sharedPreferencesWithCache.remove(
+        SharedPreferencesKeys.deviceTexture.name,
+      );
+    }
+    return _sharedPreferencesWithCache.setString(
+      SharedPreferencesKeys.deviceTexture.name,
+      deviceTexture,
+    );
+  }
+
+  Future<void> setScreenUsageKeepsWallpaper({
+    required bool keepsWallpaper,
+  }) async {
+    return _sharedPreferencesWithCache.setBool(
+      SharedPreferencesKeys.screenUsageKeepsWallpaper.name,
+      keepsWallpaper,
     );
   }
 

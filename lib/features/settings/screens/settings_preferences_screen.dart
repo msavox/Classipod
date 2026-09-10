@@ -9,6 +9,8 @@ import 'package:classipod/features/menu/controller/split_screen_controller.dart'
 import 'package:classipod/features/menu/models/split_screen_type.dart';
 import 'package:classipod/features/now_playing/provider/now_playing_details_provider.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
+import 'package:classipod/features/settings/models/device_finish.dart';
+import 'package:classipod/features/settings/models/device_texture.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
 import 'package:classipod/features/settings/models/settings_preferences_model.dart';
 import 'package:classipod/features/settings/widgets/settings_list_tile.dart';
@@ -25,6 +27,9 @@ enum _SettingsDisplayItems {
   language,
   appTheme,
   deviceColor,
+  deviceFinish,
+  customDeviceColor,
+  deviceTexture,
   clickWheelSize,
   clickWheelSensitivity,
   isTouchScreenEnabled,
@@ -34,6 +39,7 @@ enum _SettingsDisplayItems {
   splitScreenEnabled,
   immersiveMode,
   screenUsage,
+  screenUsageWallpaper,
   showOnLockScreen,
   showAppTutorial,
   rescanMusicFiles,
@@ -58,6 +64,12 @@ enum _SettingsDisplayItems {
         return context.localization.touchScreenSettingTitle;
       case deviceColor:
         return context.localization.deviceColorSettingTitle;
+      case deviceFinish:
+        return context.localization.deviceFinishSettingTitle;
+      case customDeviceColor:
+        return context.localization.customDeviceColorSettingTitle;
+      case deviceTexture:
+        return context.localization.deviceTextureSettingTitle;
       case clickWheelSize:
         return context.localization.clickWheelSizeSettingTitle;
       case clickWheelSensitivity:
@@ -74,6 +86,8 @@ enum _SettingsDisplayItems {
         return context.localization.immersiveModeSettingTitle;
       case screenUsage:
         return context.localization.screenUsageSettingTitle;
+      case screenUsageWallpaper:
+        return context.localization.screenUsageWallpaperSettingTitle;
       case showOnLockScreen:
         return context.localization.showOnLockScreenSettingTitle;
       case showAppTutorial:
@@ -176,8 +190,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             .read(settingsPreferencesControllerProvider.notifier)
             .toggleImmersiveMode();
         break;
+      case _SettingsDisplayItems.deviceFinish:
+        await ref
+            .read(settingsPreferencesControllerProvider.notifier)
+            .setDeviceFinish(
+              DeviceFinish.values[(ref
+                          .read(settingsPreferencesControllerProvider)
+                          .deviceFinish
+                          .index +
+                      1) %
+                  DeviceFinish.values.length],
+            );
+        break;
+      case _SettingsDisplayItems.customDeviceColor:
+        context.goNamed(Routes.customDeviceColor.name);
+        break;
+      case _SettingsDisplayItems.deviceTexture:
+        context.goNamed(Routes.deviceTexture.name);
+        break;
       case _SettingsDisplayItems.screenUsage:
         context.goNamed(Routes.screenUsage.name);
+        break;
+      case _SettingsDisplayItems.screenUsageWallpaper:
+        await ref
+            .read(settingsPreferencesControllerProvider.notifier)
+            .toggleScreenUsageKeepsWallpaper();
         break;
       case _SettingsDisplayItems.showOnLockScreen:
         await ref
@@ -233,6 +270,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         return settingsState.immersiveMode;
       case _SettingsDisplayItems.showOnLockScreen:
         return settingsState.showOnLockScreen;
+      case _SettingsDisplayItems.screenUsageWallpaper:
+        return settingsState.screenUsageKeepsWallpaper;
       default:
         return null;
     }
@@ -257,6 +296,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         return settingsState.volumeMode.title(context);
       case _SettingsDisplayItems.screenUsage:
         return ScreenUsage.title(settingsState.screenUsagePercentage);
+      case _SettingsDisplayItems.deviceFinish:
+        return settingsState.deviceFinish.title(context);
+      case _SettingsDisplayItems.deviceTexture:
+        return DeviceTexture.fromStored(
+              settingsState.deviceTexture,
+            )?.title(context) ??
+            context.localization.noTextureSelected;
       default:
         final bool? isOn = _isOn(settingsState, settingsItem);
         if (isOn != null) {
@@ -325,6 +371,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       case _SettingsDisplayItems.immersiveMode:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
             SplitScreenType.immersiveMode;
+        break;
+      case _SettingsDisplayItems.deviceFinish:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.deviceFinish;
+        break;
+      case _SettingsDisplayItems.customDeviceColor:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.customDeviceColor;
+        break;
+      case _SettingsDisplayItems.deviceTexture:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.deviceTexture;
+        break;
+      case _SettingsDisplayItems.screenUsageWallpaper:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.screenUsageWallpaper;
         break;
       case _SettingsDisplayItems.screenUsage:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =

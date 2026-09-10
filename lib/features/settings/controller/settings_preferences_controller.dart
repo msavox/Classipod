@@ -6,13 +6,20 @@ import 'package:classipod/core/constants/constants.dart';
 import 'package:classipod/core/extensions/build_context_extensions.dart';
 import 'package:classipod/core/models/music_metadata.dart';
 import 'package:classipod/core/navigation/routes.dart';
+import 'package:classipod/core/providers/filtered_audio_files_provider.dart';
 import 'package:classipod/core/services/audio_player_service.dart';
 import 'package:classipod/core/services/lock_screen_service.dart';
+import 'package:classipod/features/music/album/providers/album_details_provider.dart';
+import 'package:classipod/features/music/artists/providers/artist_names_provider.dart';
+import 'package:classipod/features/music/genres/providers/genres_provider.dart';
 import 'package:classipod/features/music/playlist/models/playlist_model.dart';
+import 'package:classipod/features/music/songs/provider/songs_provider.dart';
 import 'package:classipod/features/settings/models/app_theme.dart';
 import 'package:classipod/features/settings/models/click_wheel_sensitivity.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/device_color.dart';
+import 'package:classipod/features/settings/models/device_finish.dart';
+import 'package:classipod/features/settings/models/device_texture.dart';
 import 'package:classipod/features/settings/models/repeat_mode.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
 import 'package:classipod/features/settings/models/settings_preferences_model.dart';
@@ -67,6 +74,14 @@ class SettingsPreferencesControllerNotifier
       splitScreenEnabled: settingsPreferencesRepository.getSplitScreenEnabled(),
       immersiveMode: settingsPreferencesRepository.getImmersiveMode(),
       musicRootPath: settingsPreferencesRepository.getMusicRootPath(),
+      deviceFinish: DeviceFinish.fromName(
+        settingsPreferencesRepository.getDeviceFinish(),
+      ),
+      customDeviceColorValue: settingsPreferencesRepository
+          .getCustomDeviceColorValue(),
+      deviceTexture: settingsPreferencesRepository.getDeviceTexture(),
+      screenUsageKeepsWallpaper: settingsPreferencesRepository
+          .getScreenUsageKeepsWallpaper(),
       screenUsagePercentage: settingsPreferencesRepository
           .getScreenUsagePercentage(),
       showOnLockScreen: settingsPreferencesRepository.getShowOnLockScreen(),
@@ -371,6 +386,65 @@ class SettingsPreferencesControllerNotifier
     }
   }
 
+  Future<void> setDeviceFinish(DeviceFinish deviceFinish) async {
+    if (state.deviceFinish == deviceFinish) {
+      return;
+    }
+    state = state.copyWith(deviceFinish: deviceFinish);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setDeviceFinish(deviceFinishName: deviceFinish.name);
+  }
+
+  /// Passing null goes back to the colour of the selected preset device.
+  Future<void> setCustomDeviceColor(Color? color) async {
+    state = state.copyWith(
+      customDeviceColorValue: color?.toARGB32(),
+      clearCustomDeviceColor: color == null,
+    );
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setCustomDeviceColorValue(colorValue: color?.toARGB32());
+  }
+
+  Future<void> setDeviceTexture(DeviceTexture? deviceTexture) async {
+    state = state.copyWith(
+      deviceTexture: deviceTexture?.toStored(),
+      clearDeviceTexture: deviceTexture == null,
+    );
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setDeviceTexture(deviceTexture: deviceTexture?.toStored());
+  }
+
+  Future<void> toggleScreenUsageKeepsWallpaper() async {
+    state = state.copyWith(
+      screenUsageKeepsWallpaper: !state.screenUsageKeepsWallpaper,
+    );
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setScreenUsageKeepsWallpaper(
+          keepsWallpaper: state.screenUsageKeepsWallpaper,
+        );
+  }
+
+  /// Re-applies the library filters without touching the metadata cache.
+  ///
+  /// Changing which folder is scanned only narrows the tracks already read
+  /// from disk, so there is nothing to scan again.
+  Future<void> reloadLibrary() async {
+    ref.invalidate(filteredAudioFilesProvider);
+    final musicMetadataList = await ref.read(filteredAudioFilesProvider.future);
+    await ref
+        .read(audioPlayerServiceProvider.notifier)
+        .setAudioSource(musicMetadataList: musicMetadataList.toList());
+    ref
+      ..invalidate(albumDetailsProvider)
+      ..invalidate(artistNamesProvider)
+      ..invalidate(songsProvider)
+      ..invalidate(genresProvider);
+  }
+
   Future<void> rescanMusicFiles({bool clearPlaylists = false}) async {
     await Hive.box<MusicMetadata>(Constants.metadataBoxName).clear();
     if (clearPlaylists) {
@@ -407,6 +481,18 @@ class SettingsPreferencesControllerNotifier
     await ref
         .read(settingsPreferencesRepositoryProvider)
         .setMusicRootPath(musicRootPath: null);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setDeviceFinish(deviceFinishName: DeviceFinish.classic.name);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setCustomDeviceColorValue(colorValue: null);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setDeviceTexture(deviceTexture: null);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setScreenUsageKeepsWallpaper(keepsWallpaper: false);
     await ref
         .read(settingsPreferencesRepositoryProvider)
         .setAppTheme(appThemeName: AppTheme.light.name);

@@ -2,6 +2,7 @@ import 'package:classipod/features/settings/models/app_theme.dart';
 import 'package:classipod/features/settings/models/click_wheel_sensitivity.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/device_color.dart';
+import 'package:classipod/features/settings/models/device_finish.dart';
 import 'package:classipod/features/settings/models/repeat_mode.dart';
 import 'package:classipod/features/settings/models/volume_mode.dart';
 
@@ -18,6 +19,10 @@ class SettingsPreferencesModel {
   final bool splitScreenEnabled;
   final bool immersiveMode;
   final String? musicRootPath;
+  final DeviceFinish deviceFinish;
+  final int? customDeviceColorValue;
+  final String? deviceTexture;
+  final bool screenUsageKeepsWallpaper;
   final int screenUsagePercentage;
   final bool showOnLockScreen;
   final bool fetchOnlineMusic;
@@ -36,6 +41,10 @@ class SettingsPreferencesModel {
     required this.splitScreenEnabled,
     required this.immersiveMode,
     this.musicRootPath,
+    this.deviceFinish = DeviceFinish.classic,
+    this.customDeviceColorValue,
+    this.deviceTexture,
+    this.screenUsageKeepsWallpaper = false,
     required this.screenUsagePercentage,
     required this.showOnLockScreen,
     required this.appTheme,
@@ -56,6 +65,12 @@ class SettingsPreferencesModel {
     bool? immersiveMode,
     String? musicRootPath,
     bool clearMusicRootPath = false,
+    DeviceFinish? deviceFinish,
+    int? customDeviceColorValue,
+    bool clearCustomDeviceColor = false,
+    String? deviceTexture,
+    bool clearDeviceTexture = false,
+    bool? screenUsageKeepsWallpaper,
     int? screenUsagePercentage,
     bool? showOnLockScreen,
     bool? fetchOnlineMusic,
@@ -77,6 +92,15 @@ class SettingsPreferencesModel {
       musicRootPath: clearMusicRootPath
           ? null
           : (musicRootPath ?? this.musicRootPath),
+      deviceFinish: deviceFinish ?? this.deviceFinish,
+      customDeviceColorValue: clearCustomDeviceColor
+          ? null
+          : (customDeviceColorValue ?? this.customDeviceColorValue),
+      deviceTexture: clearDeviceTexture
+          ? null
+          : (deviceTexture ?? this.deviceTexture),
+      screenUsageKeepsWallpaper:
+          screenUsageKeepsWallpaper ?? this.screenUsageKeepsWallpaper,
       screenUsagePercentage:
           screenUsagePercentage ?? this.screenUsagePercentage,
       showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
@@ -100,6 +124,10 @@ class SettingsPreferencesModel {
         other.splitScreenEnabled == splitScreenEnabled &&
         other.immersiveMode == immersiveMode &&
         other.musicRootPath == musicRootPath &&
+        other.deviceFinish == deviceFinish &&
+        other.customDeviceColorValue == customDeviceColorValue &&
+        other.deviceTexture == deviceTexture &&
+        other.screenUsageKeepsWallpaper == screenUsageKeepsWallpaper &&
         other.screenUsagePercentage == screenUsagePercentage &&
         other.showOnLockScreen == showOnLockScreen &&
         other.fetchOnlineMusic == fetchOnlineMusic &&
@@ -120,6 +148,10 @@ class SettingsPreferencesModel {
     splitScreenEnabled,
     immersiveMode,
     musicRootPath,
+    deviceFinish,
+    customDeviceColorValue,
+    deviceTexture,
+    screenUsageKeepsWallpaper,
     screenUsagePercentage,
     showOnLockScreen,
     appTheme,
