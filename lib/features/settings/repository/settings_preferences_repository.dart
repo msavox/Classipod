@@ -156,6 +156,13 @@ class SettingsPreferencesRepository {
         false;
   }
 
+  bool getAlwaysShowClock() {
+    return _sharedPreferencesWithCache.getBool(
+          SharedPreferencesKeys.alwaysShowClock.name,
+        ) ??
+        false;
+  }
+
   Future<void> setLanguageLocaleCode({
     required String languageLocaleCode,
   }) async {
@@ -292,6 +299,13 @@ class SettingsPreferencesRepository {
     return _sharedPreferencesWithCache.setBool(
       SharedPreferencesKeys.screenUsageKeepsWallpaper.name,
       keepsWallpaper,
+    );
+  }
+
+  Future<void> setAlwaysShowClock({required bool isClockAlwaysShown}) async {
+    return _sharedPreferencesWithCache.setBool(
+      SharedPreferencesKeys.alwaysShowClock.name,
+      isClockAlwaysShown,
     );
   }
 

@@ -249,6 +249,14 @@ class _SplitScreenPlaceholderState extends ConsumerState<SplitScreenPlaceholder>
           icon: CupertinoIcons.cloud_download,
           contentText: "",
         );
+      } else if (splitScreenType == SplitScreenType.alwaysShowClock) {
+        splitScreenWidget = IconPreviewWidget(
+          titleText: context.localization.alwaysShowClockSettingTitle,
+          icon: CupertinoIcons.clock,
+          contentText: currentSettings.alwaysShowClock
+              ? context.localization.tileValueOn
+              : context.localization.tileValueOff,
+        );
       } else if (splitScreenType == SplitScreenType.musicRoot) {
         splitScreenWidget = IconPreviewWidget(
           titleText: context.localization.musicRootSettingTitle,

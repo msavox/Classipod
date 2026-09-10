@@ -4,15 +4,24 @@ import 'package:classipod/core/services/lock_screen_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
-/// Fills the space the device leaves unused with a clock, but only while the
-/// app is standing in for the lock screen.
+/// Fills the space the device leaves unused with a clock.
 ///
-/// Off the lock screen the band stays as it was, since the system clock is
-/// already in the status bar there.
+/// By default it only appears while the app is standing in for the lock
+/// screen, since the system clock is in the status bar otherwise; setting
+/// [isAlwaysVisible] shows it in normal use too.
 class LockScreenClock extends StatefulWidget {
-  final String localeName;
+  /// Kept slightly transparent so it reads as part of the unused area rather
+  /// than as another screen of the device.
+  static const double opacity = 0.9;
 
-  const LockScreenClock({super.key, required this.localeName});
+  final String localeName;
+  final bool isAlwaysVisible;
+
+  const LockScreenClock({
+    super.key,
+    required this.localeName,
+    this.isAlwaysVisible = false,
+  });
 
   @override
   State<LockScreenClock> createState() => _LockScreenClockState();
@@ -39,7 +48,10 @@ class _LockScreenClockState extends State<LockScreenClock> {
   }
 
   Future<void> _update() async {
-    final bool isLocked = await LockScreenService.isKeyguardLocked();
+    // Showing it unconditionally makes asking the platform pointless.
+    final bool isLocked = widget.isAlwaysVisible
+        ? true
+        : await LockScreenService.isKeyguardLocked();
     if (!mounted) {
       return;
     }
@@ -62,32 +74,35 @@ class _LockScreenClockState extends State<LockScreenClock> {
     );
     final DateFormat dateFormat = DateFormat.MMMMEEEEd(widget.localeName);
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              timeFormat.format(_now),
-              style: const TextStyle(
-                color: CupertinoColors.white,
-                fontSize: 68,
-                fontWeight: FontWeight.w200,
-                letterSpacing: -1,
+    return Opacity(
+      opacity: LockScreenClock.opacity,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                timeFormat.format(_now),
+                style: const TextStyle(
+                  color: CupertinoColors.white,
+                  fontSize: 68,
+                  fontWeight: FontWeight.w200,
+                  letterSpacing: -1,
+                ),
               ),
-            ),
-            Text(
-              dateFormat.format(_now),
-              style: const TextStyle(
-                color: CupertinoColors.systemGrey,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+              Text(
+                dateFormat.format(_now),
+                style: const TextStyle(
+                  color: CupertinoColors.systemGrey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

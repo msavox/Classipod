@@ -23,6 +23,7 @@ class SettingsPreferencesModel {
   final int? customDeviceColorValue;
   final String? deviceTexture;
   final bool screenUsageKeepsWallpaper;
+  final bool alwaysShowClock;
   final int screenUsagePercentage;
   final bool showOnLockScreen;
   final bool fetchOnlineMusic;
@@ -45,6 +46,7 @@ class SettingsPreferencesModel {
     this.customDeviceColorValue,
     this.deviceTexture,
     this.screenUsageKeepsWallpaper = false,
+    this.alwaysShowClock = false,
     required this.screenUsagePercentage,
     required this.showOnLockScreen,
     required this.appTheme,
@@ -71,6 +73,7 @@ class SettingsPreferencesModel {
     String? deviceTexture,
     bool clearDeviceTexture = false,
     bool? screenUsageKeepsWallpaper,
+    bool? alwaysShowClock,
     int? screenUsagePercentage,
     bool? showOnLockScreen,
     bool? fetchOnlineMusic,
@@ -101,6 +104,7 @@ class SettingsPreferencesModel {
           : (deviceTexture ?? this.deviceTexture),
       screenUsageKeepsWallpaper:
           screenUsageKeepsWallpaper ?? this.screenUsageKeepsWallpaper,
+      alwaysShowClock: alwaysShowClock ?? this.alwaysShowClock,
       screenUsagePercentage:
           screenUsagePercentage ?? this.screenUsagePercentage,
       showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
@@ -128,6 +132,7 @@ class SettingsPreferencesModel {
         other.customDeviceColorValue == customDeviceColorValue &&
         other.deviceTexture == deviceTexture &&
         other.screenUsageKeepsWallpaper == screenUsageKeepsWallpaper &&
+        other.alwaysShowClock == alwaysShowClock &&
         other.screenUsagePercentage == screenUsagePercentage &&
         other.showOnLockScreen == showOnLockScreen &&
         other.fetchOnlineMusic == fetchOnlineMusic &&
@@ -135,7 +140,7 @@ class SettingsPreferencesModel {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     languageLocaleCode,
     deviceColor,
     clickWheelSize,
@@ -152,9 +157,10 @@ class SettingsPreferencesModel {
     customDeviceColorValue,
     deviceTexture,
     screenUsageKeepsWallpaper,
+    alwaysShowClock,
     screenUsagePercentage,
     showOnLockScreen,
     appTheme,
     fetchOnlineMusic,
-  );
+  ]);
 }

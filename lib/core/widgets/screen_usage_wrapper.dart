@@ -53,6 +53,11 @@ class ScreenUsageWrapper extends ConsumerWidget {
     // insets it was compensating for have to be removed from the child.
     double shrinkTop(double inset) => math.max(0, inset - blackedOutHeight);
 
+    final bool alwaysShowClock = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.alwaysShowClock,
+      ),
+    );
     final bool showOnLockScreen = ref.watch(
       settingsPreferencesControllerProvider.select(
         (settings) => settings.showOnLockScreen,
@@ -78,10 +83,15 @@ class ScreenUsageWrapper extends ConsumerWidget {
         children: [
           SizedBox(
             height: blackedOutHeight,
-            child: showOnLockScreen && LockScreenService.isSupported
+            child:
+                alwaysShowClock ||
+                    (showOnLockScreen && LockScreenService.isSupported)
                 ? SafeArea(
                     bottom: false,
-                    child: LockScreenClock(localeName: languageLocaleCode),
+                    child: LockScreenClock(
+                      localeName: languageLocaleCode,
+                      isAlwaysVisible: alwaysShowClock,
+                    ),
                   )
                 : null,
           ),

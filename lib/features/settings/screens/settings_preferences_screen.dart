@@ -40,6 +40,7 @@ enum _SettingsDisplayItems {
   immersiveMode,
   screenUsage,
   screenUsageWallpaper,
+  alwaysShowClock,
   showOnLockScreen,
   showAppTutorial,
   rescanMusicFiles,
@@ -88,6 +89,8 @@ enum _SettingsDisplayItems {
         return context.localization.screenUsageSettingTitle;
       case screenUsageWallpaper:
         return context.localization.screenUsageWallpaperSettingTitle;
+      case alwaysShowClock:
+        return context.localization.alwaysShowClockSettingTitle;
       case showOnLockScreen:
         return context.localization.showOnLockScreenSettingTitle;
       case showAppTutorial:
@@ -216,6 +219,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             .read(settingsPreferencesControllerProvider.notifier)
             .toggleScreenUsageKeepsWallpaper();
         break;
+      case _SettingsDisplayItems.alwaysShowClock:
+        await ref
+            .read(settingsPreferencesControllerProvider.notifier)
+            .toggleAlwaysShowClock();
+        break;
       case _SettingsDisplayItems.showOnLockScreen:
         await ref
             .read(settingsPreferencesControllerProvider.notifier)
@@ -272,6 +280,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         return settingsState.showOnLockScreen;
       case _SettingsDisplayItems.screenUsageWallpaper:
         return settingsState.screenUsageKeepsWallpaper;
+      case _SettingsDisplayItems.alwaysShowClock:
+        return settingsState.alwaysShowClock;
       default:
         return null;
     }
@@ -387,6 +397,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       case _SettingsDisplayItems.screenUsageWallpaper:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
             SplitScreenType.screenUsageWallpaper;
+        break;
+      case _SettingsDisplayItems.alwaysShowClock:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.alwaysShowClock;
         break;
       case _SettingsDisplayItems.screenUsage:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =

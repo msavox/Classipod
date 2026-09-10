@@ -13,6 +13,7 @@ enum SharedPreferencesKeys {
   immersiveMode,
   screenUsagePercentage,
   screenUsageKeepsWallpaper,
+  alwaysShowClock,
   showOnLockScreen,
   musicRootPath,
   deviceFinish,

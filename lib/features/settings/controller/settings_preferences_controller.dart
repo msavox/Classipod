@@ -82,6 +82,7 @@ class SettingsPreferencesControllerNotifier
       deviceTexture: settingsPreferencesRepository.getDeviceTexture(),
       screenUsageKeepsWallpaper: settingsPreferencesRepository
           .getScreenUsageKeepsWallpaper(),
+      alwaysShowClock: settingsPreferencesRepository.getAlwaysShowClock(),
       screenUsagePercentage: settingsPreferencesRepository
           .getScreenUsagePercentage(),
       showOnLockScreen: settingsPreferencesRepository.getShowOnLockScreen(),
@@ -417,6 +418,13 @@ class SettingsPreferencesControllerNotifier
         .setDeviceTexture(deviceTexture: deviceTexture?.toStored());
   }
 
+  Future<void> toggleAlwaysShowClock() async {
+    state = state.copyWith(alwaysShowClock: !state.alwaysShowClock);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setAlwaysShowClock(isClockAlwaysShown: state.alwaysShowClock);
+  }
+
   Future<void> toggleScreenUsageKeepsWallpaper() async {
     state = state.copyWith(
       screenUsageKeepsWallpaper: !state.screenUsageKeepsWallpaper,
@@ -493,6 +501,9 @@ class SettingsPreferencesControllerNotifier
     await ref
         .read(settingsPreferencesRepositoryProvider)
         .setScreenUsageKeepsWallpaper(keepsWallpaper: false);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setAlwaysShowClock(isClockAlwaysShown: false);
     await ref
         .read(settingsPreferencesRepositoryProvider)
         .setAppTheme(appThemeName: AppTheme.light.name);

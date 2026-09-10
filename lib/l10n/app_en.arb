@@ -284,6 +284,10 @@
   "@artworkScraperFailed": {
     "description": "Shown when the lookup could not be completed"
   },
+  "alwaysShowClockSettingTitle": "Always Show Clock",
+  "@alwaysShowClockSettingTitle": {
+    "description": "Whether the clock in the unused area is shown outside the lock screen too"
+  },
   "showAppTutorialSettingTitle": "Show Tutorial",
   "@showAppTutorialSettingTitle": {
     "description": "The title of the show app tutorial setting"

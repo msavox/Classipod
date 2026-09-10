@@ -79,6 +79,7 @@
   "artworkScraperHint": "Nomi di album e artisti vengono inviati al servizio di ricerca iTunes",
   "artworkScraperNothingMissing": "Nessuna mancante",
   "artworkScraperFailed": "Ricerca fallita",
+  "alwaysShowClockSettingTitle": "Mostra sempre orologio",
   "showAppTutorialSettingTitle": "Tutorial dello spettacolo",
   "changeDirectorySettingTitle": "Cambia directory",
   "donateSettingTitle": "Donare",
