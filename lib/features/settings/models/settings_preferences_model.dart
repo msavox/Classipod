@@ -18,6 +18,8 @@ class SettingsPreferencesModel {
   final bool splitScreenEnabled;
   final bool immersiveMode;
   final String? musicRootPath;
+  final int screenUsagePercentage;
+  final bool showOnLockScreen;
   final bool fetchOnlineMusic;
   final AppTheme appTheme;
 
@@ -34,6 +36,8 @@ class SettingsPreferencesModel {
     required this.splitScreenEnabled,
     required this.immersiveMode,
     this.musicRootPath,
+    required this.screenUsagePercentage,
+    required this.showOnLockScreen,
     required this.appTheme,
     this.fetchOnlineMusic = false,
   });
@@ -52,6 +56,8 @@ class SettingsPreferencesModel {
     bool? immersiveMode,
     String? musicRootPath,
     bool clearMusicRootPath = false,
+    int? screenUsagePercentage,
+    bool? showOnLockScreen,
     bool? fetchOnlineMusic,
     AppTheme? appTheme,
   }) {
@@ -71,6 +77,9 @@ class SettingsPreferencesModel {
       musicRootPath: clearMusicRootPath
           ? null
           : (musicRootPath ?? this.musicRootPath),
+      screenUsagePercentage:
+          screenUsagePercentage ?? this.screenUsagePercentage,
+      showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
       appTheme: appTheme ?? this.appTheme,
       fetchOnlineMusic: fetchOnlineMusic ?? this.fetchOnlineMusic,
     );
@@ -91,6 +100,8 @@ class SettingsPreferencesModel {
         other.splitScreenEnabled == splitScreenEnabled &&
         other.immersiveMode == immersiveMode &&
         other.musicRootPath == musicRootPath &&
+        other.screenUsagePercentage == screenUsagePercentage &&
+        other.showOnLockScreen == showOnLockScreen &&
         other.fetchOnlineMusic == fetchOnlineMusic &&
         other.appTheme == appTheme;
   }
@@ -109,6 +120,8 @@ class SettingsPreferencesModel {
     splitScreenEnabled,
     immersiveMode,
     musicRootPath,
+    screenUsagePercentage,
+    showOnLockScreen,
     appTheme,
     fetchOnlineMusic,
   );

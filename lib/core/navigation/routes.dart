@@ -35,6 +35,7 @@ import 'package:classipod/features/settings/screens/device_color_selection_scree
 import 'package:classipod/features/settings/screens/exclude_directories_screen.dart';
 import 'package:classipod/features/settings/screens/language_selection_screen.dart';
 import 'package:classipod/features/settings/screens/music_root_selection_screen.dart';
+import 'package:classipod/features/settings/screens/screen_usage_selection_screen.dart';
 import 'package:classipod/features/settings/screens/settings_preferences_screen.dart';
 import 'package:classipod/features/sleep_timer/screens/sleep_timer_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +50,7 @@ enum Routes {
   language,
   deviceColor,
   musicRoot,
+  screenUsage,
   excludeDirectories,
   nowPlaying,
   nowPlayingMoreOptions,
@@ -96,6 +98,8 @@ enum Routes {
         return context.localization.deviceColorSettingTitle;
       case musicRoot:
         return context.localization.musicRootSettingTitle;
+      case screenUsage:
+        return context.localization.screenUsageSettingTitle;
       case excludeDirectories:
         return context.localization.excludeDirectoriesScreenTitle;
       case nowPlaying:
@@ -250,6 +254,14 @@ final routerProvider = Provider(
                         },
                         pageBuilder: (context, state) => const CupertinoPage(
                           child: MusicRootSelectionScreen(),
+                        ),
+                      ),
+                      GoRoute(
+                        path: Routes.screenUsage.name,
+                        name: Routes.screenUsage.name,
+                        parentNavigatorKey: menuNavigatorKey,
+                        pageBuilder: (context, state) => const CupertinoPage(
+                          child: ScreenUsageSelectionScreen(),
                         ),
                       ),
                       GoRoute(

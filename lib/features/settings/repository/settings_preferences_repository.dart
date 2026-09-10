@@ -6,6 +6,7 @@ import 'package:classipod/features/settings/models/click_wheel_sensitivity.dart'
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
 import 'package:classipod/features/settings/models/device_color.dart';
 import 'package:classipod/features/settings/models/repeat_mode.dart';
+import 'package:classipod/features/settings/models/screen_usage.dart';
 import 'package:classipod/features/settings/models/volume_mode.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -112,6 +113,22 @@ class SettingsPreferencesRepository {
     );
   }
 
+  int getScreenUsagePercentage() {
+    return ScreenUsage.sanitize(
+      _sharedPreferencesWithCache.getInt(
+            SharedPreferencesKeys.screenUsagePercentage.name,
+          ) ??
+          ScreenUsage.fullUsagePercentage,
+    );
+  }
+
+  bool getShowOnLockScreen() {
+    return _sharedPreferencesWithCache.getBool(
+          SharedPreferencesKeys.showOnLockScreen.name,
+        ) ??
+        false;
+  }
+
   Future<void> setLanguageLocaleCode({
     required String languageLocaleCode,
   }) async {
@@ -215,6 +232,24 @@ class SettingsPreferencesRepository {
     return _sharedPreferencesWithCache.setBool(
       SharedPreferencesKeys.immersiveMode.name,
       isImmersiveModeEnabled,
+    );
+  }
+
+  Future<void> setScreenUsagePercentage({
+    required int screenUsagePercentage,
+  }) async {
+    return _sharedPreferencesWithCache.setInt(
+      SharedPreferencesKeys.screenUsagePercentage.name,
+      ScreenUsage.sanitize(screenUsagePercentage),
+    );
+  }
+
+  Future<void> setShowOnLockScreen({
+    required bool isShowOnLockScreenEnabled,
+  }) async {
+    return _sharedPreferencesWithCache.setBool(
+      SharedPreferencesKeys.showOnLockScreen.name,
+      isShowOnLockScreenEnabled,
     );
   }
 }
