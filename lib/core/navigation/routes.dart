@@ -31,10 +31,10 @@ import 'package:classipod/features/now_playing/screen/now_playing_more_options_m
 import 'package:classipod/features/now_playing/screen/now_playing_screen.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/screens/about_screen.dart';
+import 'package:classipod/features/settings/screens/artwork_scraper_screen.dart';
 import 'package:classipod/features/settings/screens/custom_device_color_screen.dart';
 import 'package:classipod/features/settings/screens/device_color_selection_screen.dart';
 import 'package:classipod/features/settings/screens/device_texture_selection_screen.dart';
-import 'package:classipod/features/settings/screens/exclude_directories_screen.dart';
 import 'package:classipod/features/settings/screens/language_selection_screen.dart';
 import 'package:classipod/features/settings/screens/music_root_selection_screen.dart';
 import 'package:classipod/features/settings/screens/screen_usage_selection_screen.dart';
@@ -54,8 +54,8 @@ enum Routes {
   customDeviceColor,
   deviceTexture,
   musicRoot,
+  artworkScraper,
   screenUsage,
-  excludeDirectories,
   nowPlaying,
   nowPlayingMoreOptions,
   sleepTimer,
@@ -106,10 +106,10 @@ enum Routes {
         return context.localization.deviceTextureSettingTitle;
       case musicRoot:
         return context.localization.musicRootSettingTitle;
+      case artworkScraper:
+        return context.localization.artworkScraperSettingTitle;
       case screenUsage:
         return context.localization.screenUsageSettingTitle;
-      case excludeDirectories:
-        return context.localization.excludeDirectoriesScreenTitle;
       case nowPlaying:
         return context.localization.nowPlayingScreenTitle;
       case nowPlayingMoreOptions:
@@ -265,6 +265,13 @@ final routerProvider = Provider(
                         ),
                       ),
                       GoRoute(
+                        path: Routes.artworkScraper.name,
+                        name: Routes.artworkScraper.name,
+                        parentNavigatorKey: menuNavigatorKey,
+                        pageBuilder: (context, state) =>
+                            const CupertinoPage(child: ArtworkScraperScreen()),
+                      ),
+                      GoRoute(
                         path: Routes.musicRoot.name,
                         name: Routes.musicRoot.name,
                         parentNavigatorKey: menuNavigatorKey,
@@ -286,22 +293,6 @@ final routerProvider = Provider(
                         parentNavigatorKey: menuNavigatorKey,
                         pageBuilder: (context, state) => const CupertinoPage(
                           child: ScreenUsageSelectionScreen(),
-                        ),
-                      ),
-                      GoRoute(
-                        path: Routes.excludeDirectories.name,
-                        name: Routes.excludeDirectories.name,
-                        parentNavigatorKey: rootNavigatorKey,
-                        onExit: (context, state) async {
-                          await ref
-                              .read(
-                                settingsPreferencesControllerProvider.notifier,
-                              )
-                              .rescanMusicFiles();
-                          return true;
-                        },
-                        pageBuilder: (context, state) => const CupertinoPage(
-                          child: ExcludeDirectoriesScreen(),
                         ),
                       ),
                     ],

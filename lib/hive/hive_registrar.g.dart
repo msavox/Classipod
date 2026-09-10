@@ -2,12 +2,11 @@
 // Do not modify
 // Check in to version control
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:classipod/hive/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
-    registerAdapter(ExcludeDirectoryModelAdapter());
     registerAdapter(MusicMetadataAdapter());
     registerAdapter(PlaylistModelAdapter());
   }
@@ -15,7 +14,6 @@ extension HiveRegistrar on HiveInterface {
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
-    registerAdapter(ExcludeDirectoryModelAdapter());
     registerAdapter(MusicMetadataAdapter());
     registerAdapter(PlaylistModelAdapter());
   }

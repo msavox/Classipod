@@ -25,7 +25,7 @@ enum SplitScreenType {
   showTutorialScreen,
   rescanMusicFiles,
   musicRoot,
-  excludeDirectories,
+  artworkScraper,
   resetSettings,
   donate,
 }

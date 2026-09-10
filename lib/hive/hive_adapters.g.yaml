@@ -51,11 +51,3 @@ types:
         index: 16
       lyrics:
         index: 17
-  ExcludeDirectoryModel:
-    typeId: 3
-    nextIndex: 2
-    fields:
-      directoryPath:
-        index: 0
-      isExcluded:
-        index: 1

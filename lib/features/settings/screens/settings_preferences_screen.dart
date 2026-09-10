@@ -44,7 +44,7 @@ enum _SettingsDisplayItems {
   showAppTutorial,
   rescanMusicFiles,
   musicRoot,
-  excludeDirectories,
+  artworkScraper,
   resetSettings,
   donate;
 
@@ -98,8 +98,8 @@ enum _SettingsDisplayItems {
         return context.localization.resetSettingsTitle;
       case musicRoot:
         return context.localization.musicRootSettingTitle;
-      case excludeDirectories:
-        return context.localization.excludeDirectoriesScreenTitle;
+      case artworkScraper:
+        return context.localization.artworkScraperSettingTitle;
       case donate:
         return context.localization.donateSettingTitle;
     }
@@ -234,8 +234,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       case _SettingsDisplayItems.musicRoot:
         context.goNamed(Routes.musicRoot.name);
         break;
-      case _SettingsDisplayItems.excludeDirectories:
-        context.goNamed(Routes.excludeDirectories.name);
+      case _SettingsDisplayItems.artworkScraper:
+        context.goNamed(Routes.artworkScraper.name);
         break;
       case _SettingsDisplayItems.resetSettings:
         await ref
@@ -408,9 +408,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
             SplitScreenType.musicRoot;
         break;
-      case _SettingsDisplayItems.excludeDirectories:
+      case _SettingsDisplayItems.artworkScraper:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
-            SplitScreenType.excludeDirectories;
+            SplitScreenType.artworkScraper;
         break;
       case _SettingsDisplayItems.resetSettings:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
