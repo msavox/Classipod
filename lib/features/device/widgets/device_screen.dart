@@ -1,5 +1,6 @@
 import 'package:classipod/core/constants/constants.dart';
 import 'package:classipod/core/extensions/build_context_extensions.dart';
+import 'package:classipod/features/device/widgets/music_scan_indicator.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +37,20 @@ class DeviceScreen extends ConsumerWidget {
           data: MediaQuery.of(
             context,
           ).copyWith(size: Size(size.width - 40 - 10, Constants.screenHeight)),
-          child: child,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              child,
+              // Sits over the screen instead of in it, so a scan running in
+              // the background costs no room on any of the menus.
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: MusicScanIndicator(),
+              ),
+            ],
+          ),
         ),
       ),
     );

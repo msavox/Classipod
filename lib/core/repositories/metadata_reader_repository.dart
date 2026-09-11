@@ -109,51 +109,58 @@ class MetadataReaderRepository {
     return '$thumbnailsDirectoryPath/$albumArtFileName.jpg';
   }
 
-  UnmodifiableListView<MusicMetadata> extractMetadataFromDirectory(
-    String musicFolderPath,
-  ) {
+  /// Paths of every supported audio file below [musicFolderPath].
+  ///
+  /// Listed on its own so a scan knows up front how many files it is going
+  /// through, and can say how far along it is.
+  List<String> listAudioFilePaths(String musicFolderPath) {
     final Directory storageDir = Directory(musicFolderPath);
     final List<FileSystemEntity> files = storageDir.listSync(
       recursive: true,
       followLinks: false,
     );
-    final List<String> filePaths = files.map((e) => e.path).toList();
+    return files
+        .map((e) => e.path)
+        .where(isSupportedAudioFormat)
+        .toList(growable: false);
+  }
 
-    final List<MusicMetadata> metadataList = [];
-
-    AudioMetadata audioMetadata;
-
-    for (final String path in filePaths) {
-      try {
-        if (isSupportedAudioFormat(path)) {
-          audioMetadata = _readAudioMetadata(path);
-
-          String? thumbnailPath;
-          if (audioMetadata.pictures.isNotEmpty) {
-            thumbnailPath = getThumbnailPath(
-              albumName: audioMetadata.album,
-              artistName: audioMetadata.artist,
-              filePath: path,
-            );
-            File(
-              thumbnailPath,
-            ).writeAsBytesSync(audioMetadata.pictures[0].bytes);
-          }
-
-          metadataList.add(
-            MusicMetadata.fromAudioMetadata(
-              audioMetadata,
-              thumbnailPath,
-              metadataList.length,
-            ),
-          );
-        }
-      } catch (e) {
-        debugPrint("Metadata Parsing Error: $e");
-      }
+  /// Reads one file, returning null when it holds no audio this app can play
+  /// or its tags cannot be parsed. A single unreadable file must not stop a
+  /// scan of a whole library.
+  MusicMetadata? extractMetadataFromFile(String path, int originalSongIndex) {
+    if (!isSupportedAudioFormat(path)) {
+      return null;
     }
 
-    return UnmodifiableListView(metadataList);
+    try {
+      final AudioMetadata audioMetadata = _readAudioMetadata(path);
+
+      String? thumbnailPath;
+      if (audioMetadata.pictures.isNotEmpty) {
+        thumbnailPath = getThumbnailPath(
+          albumName: audioMetadata.album,
+          artistName: audioMetadata.artist,
+          filePath: path,
+        );
+        File(thumbnailPath).writeAsBytesSync(audioMetadata.pictures[0].bytes);
+      }
+
+      return MusicMetadata.fromAudioMetadata(
+        audioMetadata,
+        thumbnailPath,
+        originalSongIndex,
+      );
+    } catch (e) {
+      debugPrint("Metadata Parsing Error: $e");
+      return null;
+    }
+  }
+
+  UnmodifiableListView<MusicMetadata> extractMetadataFromDirectory(
+    String musicFolderPath,
+  ) {
+    return extractMetadataFromFiles(listAudioFilePaths(musicFolderPath));
   }
 
   UnmodifiableListView<MusicMetadata> extractMetadataFromFiles(
@@ -161,35 +168,13 @@ class MetadataReaderRepository {
   ) {
     final List<MusicMetadata> metadataList = [];
 
-    AudioMetadata audioMetadata;
-
     for (final String path in filePaths) {
-      try {
-        if (isSupportedAudioFormat(path)) {
-          audioMetadata = _readAudioMetadata(path);
-
-          String? thumbnailPath;
-          if (audioMetadata.pictures.isNotEmpty) {
-            thumbnailPath = getThumbnailPath(
-              albumName: audioMetadata.album,
-              artistName: audioMetadata.artist,
-              filePath: path,
-            );
-            File(
-              thumbnailPath,
-            ).writeAsBytesSync(audioMetadata.pictures[0].bytes);
-          }
-
-          metadataList.add(
-            MusicMetadata.fromAudioMetadata(
-              audioMetadata,
-              thumbnailPath,
-              metadataList.length,
-            ),
-          );
-        }
-      } catch (e) {
-        debugPrint("Metadata Parsing Error: $e");
+      final MusicMetadata? metadata = extractMetadataFromFile(
+        path,
+        metadataList.length,
+      );
+      if (metadata != null) {
+        metadataList.add(metadata);
       }
     }
 

@@ -3,6 +3,7 @@ import 'dart:io' as io;
 
 import 'package:classipod/core/alerts/dialogs.dart';
 import 'package:classipod/core/constants/constants.dart';
+import 'package:classipod/core/controllers/music_scan_controller.dart';
 import 'package:classipod/core/extensions/build_context_extensions.dart';
 import 'package:classipod/core/models/music_metadata.dart';
 import 'package:classipod/core/navigation/routes.dart';
@@ -453,12 +454,17 @@ class SettingsPreferencesControllerNotifier
       ..invalidate(genresProvider);
   }
 
+  /// Throws the cached metadata away and reads the library again.
+  ///
+  /// The scan itself runs in the background, so this returns as soon as the
+  /// emptied library is live; the tracks come back as it finds them.
   Future<void> rescanMusicFiles({bool clearPlaylists = false}) async {
     await Hive.box<MusicMetadata>(Constants.metadataBoxName).clear();
     if (clearPlaylists) {
       await Hive.box<PlaylistModel>(Constants.playlistBoxName).clear();
     }
-    ref.read(routerProvider).goNamed(Routes.splash.name);
+    ref.read(musicScanControllerProvider.notifier).forgetPreviousScan();
+    await reloadLibrary();
   }
 
   Future<void> resetSettings() async {
