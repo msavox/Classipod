@@ -2,15 +2,19 @@ import 'dart:math' as math;
 
 import 'package:classipod/core/providers/device_appearance_provider.dart';
 import 'package:classipod/core/services/lock_screen_service.dart';
+import 'package:classipod/core/widgets/device_background_scope.dart';
 import 'package:classipod/core/widgets/lock_screen_clock.dart';
+import 'package:classipod/features/device/widgets/device_frame_edge_shadows.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/models/click_wheel_size.dart';
+import 'package:classipod/features/settings/models/device_appearance.dart';
 import 'package:classipod/features/settings/models/screen_usage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Restricts the app to the bottom `screenUsagePercentage` of the available
-/// height and paints the unused area at the top solid black.
+/// height and fills the unused area at the top, either solid black or with the
+/// device wallpaper carried on upwards.
 ///
 /// While the device stands in for the lock screen, that area shows a clock,
 /// since the system one is not on screen then.
@@ -73,47 +77,68 @@ class ScreenUsageWrapper extends ConsumerWidget {
         (settings) => settings.screenUsageKeepsWallpaper,
       ),
     );
+    final DeviceAppearance appearance = ref.watch(deviceAppearanceProvider);
 
-    return DecoratedBox(
-      decoration: keepsWallpaper
-          ? ref.watch(deviceAppearanceProvider).frameDecoration
-          : const BoxDecoration(color: CupertinoColors.black),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: blackedOutHeight,
-            child:
-                alwaysShowClock ||
-                    (showOnLockScreen && LockScreenService.isSupported)
-                ? SafeArea(
-                    bottom: false,
-                    child: LockScreenClock(
-                      localeName: languageLocaleCode,
-                      isAlwaysVisible: alwaysShowClock,
-                    ),
-                  )
-                : null,
-          ),
-          SizedBox(
-            height: usedHeight,
-            child: MediaQuery(
-              data: mediaQuery.copyWith(
-                size: Size(mediaQuery.size.width, usedHeight),
-                padding: mediaQuery.padding.copyWith(
-                  top: shrinkTop(mediaQuery.padding.top),
-                ),
-                viewPadding: mediaQuery.viewPadding.copyWith(
-                  top: shrinkTop(mediaQuery.viewPadding.top),
-                ),
-                viewInsets: mediaQuery.viewInsets.copyWith(
-                  top: shrinkTop(mediaQuery.viewInsets.top),
-                ),
+    final Widget body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: blackedOutHeight,
+          child:
+              alwaysShowClock ||
+                  (showOnLockScreen && LockScreenService.isSupported)
+              ? SafeArea(
+                  bottom: false,
+                  child: LockScreenClock(
+                    localeName: languageLocaleCode,
+                    isAlwaysVisible: alwaysShowClock,
+                    // Only a pale wallpaper carried upwards needs dark hands;
+                    // the blacked out area never does.
+                    isOnLightBackground:
+                        keepsWallpaper && !appearance.style.isDark,
+                  ),
+                )
+              : null,
+        ),
+        SizedBox(
+          height: usedHeight,
+          child: MediaQuery(
+            data: mediaQuery.copyWith(
+              size: Size(mediaQuery.size.width, usedHeight),
+              padding: mediaQuery.padding.copyWith(
+                top: shrinkTop(mediaQuery.padding.top),
               ),
-              child: child,
+              viewPadding: mediaQuery.viewPadding.copyWith(
+                top: shrinkTop(mediaQuery.viewPadding.top),
+              ),
+              viewInsets: mediaQuery.viewInsets.copyWith(
+                top: shrinkTop(mediaQuery.viewInsets.top),
+              ),
             ),
+            child: child,
           ),
-        ],
+        ),
+      ],
+    );
+
+    if (!keepsWallpaper) {
+      return DeviceBackgroundScope(
+        isPaintedByAncestor: false,
+        child: ColoredBox(color: CupertinoColors.black, child: body),
+      );
+    }
+
+    // Painted once over the full height, edge shadows included, so the frame
+    // below carries on the same gradient and texture instead of starting over.
+    return DeviceBackgroundScope(
+      isPaintedByAncestor: true,
+      child: DecoratedBox(
+        decoration: appearance.frameDecoration,
+        child: Stack(
+          fit: StackFit.expand,
+          clipBehavior: Clip.none,
+          children: [const DeviceFrameEdgeShadows(), body],
+        ),
       ),
     );
   }

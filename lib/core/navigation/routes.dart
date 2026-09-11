@@ -183,6 +183,10 @@ final routerProvider = Provider(
               behavior: CustomScrollBehavior(),
               child: CupertinoPageScaffold(
                 resizeToAvoidBottomInset: false,
+                // The device covers the scaffold whole, and its own
+                // background may be painted further up, above this page. A
+                // scaffold colour of its own would hide that one.
+                backgroundColor: CupertinoColors.transparent,
                 child: DeviceFrame(key: deviceFrameGlobalKey, child: child),
               ),
             ),
