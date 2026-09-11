@@ -404,6 +404,10 @@
   "@themeSettingTitle": {
     "description": "Title for the theme selection setting"
   },
+  "whiteDeviceColor": "White",
+  "@whiteDeviceColor": {
+    "description": "The name of the white device color"
+  },
   "silverDeviceColor": "Silver",
   "@silverDeviceColor": {
     "description": "The name of the silver device color"

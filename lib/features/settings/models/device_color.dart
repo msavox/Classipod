@@ -59,6 +59,7 @@ class DeviceColorStyle {
 }
 
 enum DeviceColor {
+  white,
   silver,
   black,
   oledBlack,
@@ -104,6 +105,8 @@ enum DeviceColor {
 
   String title(BuildContext context) {
     switch (this) {
+      case white:
+        return context.localization.whiteDeviceColor;
       case silver:
         return context.localization.silverDeviceColor;
       case black:
@@ -135,6 +138,23 @@ enum DeviceColor {
 
   DeviceColorStyle get style {
     switch (this) {
+      // The flat counterpart of oledBlack, and the front of the iPod the app
+      // is modelled on: one plain white, no gradient and no noise over it.
+      case DeviceColor.white:
+        return const DeviceColorStyle(
+          noiseOpacity: 0,
+          frameGradientColors: [CupertinoColors.white, CupertinoColors.white],
+          solidFrameColor: CupertinoColors.white,
+          controlBackgroundColor: CupertinoColors.white,
+          controlBorderColor: AppPalette.lightDeviceControlBorderColor,
+          innerButtonGradientColors: [
+            AppPalette.lightDeviceControlInnerButtonGradientColor1,
+            AppPalette.lightDeviceControlInnerButtonGradientColor2,
+          ],
+          buttonAccentColor: AppPalette.lightDeviceButtonColor,
+          buttonIconColor: AppPalette.lightDeviceButtonColor,
+          isDark: false,
+        );
       case DeviceColor.silver:
         return const DeviceColorStyle(
           noiseOpacity: 1,

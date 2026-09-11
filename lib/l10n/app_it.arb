@@ -108,6 +108,7 @@
   "disableBatteryOptimizationTitle": "Disabilita l'ottimizzazione della batteria",
   "disableBatteryOptimizationContent": "Si prega di disabilitare l'ottimizzazione della batteria per questa app nelle impostazioni del dispositivo per consentire la riproduzione in background della musica.",
   "languageScreenTitle": "Lingua",
+  "whiteDeviceColor": "Bianco",
   "silverDeviceColor": "Argento",
   "blackDeviceColor": "Nero",
   "resetSettingsTitle": "Ripristina le impostazioni",
