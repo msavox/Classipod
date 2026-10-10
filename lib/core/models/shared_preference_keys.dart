@@ -14,6 +14,8 @@ enum SharedPreferencesKeys {
   screenUsagePercentage,
   screenUsageKeepsWallpaper,
   alwaysShowClock,
+  clockColor,
+  clockOpacity,
   showOnLockScreen,
   musicRootPath,
   deviceFinish,

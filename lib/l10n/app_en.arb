@@ -404,6 +404,18 @@
   "@themeSettingTitle": {
     "description": "Title for the theme selection setting"
   },
+  "clockAppearanceSettingTitle": "Clock Appearance",
+  "@clockAppearanceSettingTitle": {
+    "description": "Title of the setting picking the colour and the transparency of the clock"
+  },
+  "clockOpacityTitle": "Opacity",
+  "@clockOpacityTitle": {
+    "description": "Label of the slider setting how transparent the clock is"
+  },
+  "useAutomaticClockColor": "Automatic Colour",
+  "@useAutomaticClockColor": {
+    "description": "Row handing the clock colour back to the app, which picks one from the background"
+  },
   "whiteDeviceColor": "White",
   "@whiteDeviceColor": {
     "description": "The name of the white device color"

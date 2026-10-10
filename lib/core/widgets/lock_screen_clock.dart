@@ -25,14 +25,23 @@ class LockScreenClock extends StatefulWidget {
   final String localeName;
   final bool isAlwaysVisible;
 
+  /// Colour chosen by the user, or null to read one off the background.
+  final Color? color;
+
+  /// How far the clock fades into what is behind it.
+  final double opacity;
+
   /// Set when the wallpaper carried up behind the clock is a pale one, which
-  /// white numerals would disappear into.
+  /// white numerals would disappear into. Only consulted while [color] is
+  /// null.
   final bool isOnLightBackground;
 
   const LockScreenClock({
     super.key,
     required this.localeName,
     this.isAlwaysVisible = false,
+    this.color,
+    this.opacity = 1,
     this.isOnLightBackground = false,
   });
 
@@ -89,16 +98,21 @@ class _LockScreenClockState extends State<LockScreenClock> {
     );
     final DateFormat dateFormat = DateFormat.MMMMEEEEd(widget.localeName);
 
-    final Color foregroundColor = widget.isOnLightBackground
-        ? const Color(0xFF1C1C1E)
-        : CupertinoColors.white;
+    final Color baseColor =
+        widget.color ??
+        (widget.isOnLightBackground
+            ? const Color(0xFF1C1C1E)
+            : CupertinoColors.white);
+    final Color foregroundColor = baseColor.withValues(alpha: widget.opacity);
     // Keeps the numerals readable wherever the wallpaper happens to be busy,
-    // without reading as a drop shadow of their own.
+    // without reading as a drop shadow of their own. It fades with the clock,
+    // or a barely visible one would still carry a hard outline.
     final List<Shadow> shadows = [
       Shadow(
-        color: (widget.isOnLightBackground
-            ? CupertinoColors.white
-            : CupertinoColors.black).withValues(alpha: 0.25),
+        color: (baseColor.computeLuminance() > 0.5
+                ? CupertinoColors.black
+                : CupertinoColors.white)
+            .withValues(alpha: 0.25 * widget.opacity),
         blurRadius: 12,
       ),
     ];

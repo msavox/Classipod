@@ -32,6 +32,7 @@ import 'package:classipod/features/now_playing/screen/now_playing_screen.dart';
 import 'package:classipod/features/settings/controller/settings_preferences_controller.dart';
 import 'package:classipod/features/settings/screens/about_screen.dart';
 import 'package:classipod/features/settings/screens/artwork_scraper_screen.dart';
+import 'package:classipod/features/settings/screens/clock_appearance_screen.dart';
 import 'package:classipod/features/settings/screens/custom_device_color_screen.dart';
 import 'package:classipod/features/settings/screens/device_color_selection_screen.dart';
 import 'package:classipod/features/settings/screens/device_texture_selection_screen.dart';
@@ -53,6 +54,7 @@ enum Routes {
   deviceColor,
   customDeviceColor,
   deviceTexture,
+  clockAppearance,
   musicRoot,
   artworkScraper,
   screenUsage,
@@ -102,6 +104,8 @@ enum Routes {
         return context.localization.deviceColorSettingTitle;
       case customDeviceColor:
         return context.localization.customDeviceColorSettingTitle;
+      case clockAppearance:
+        return context.localization.clockAppearanceSettingTitle;
       case deviceTexture:
         return context.localization.deviceTextureSettingTitle;
       case musicRoot:
@@ -266,6 +270,14 @@ final routerProvider = Provider(
                         parentNavigatorKey: menuNavigatorKey,
                         pageBuilder: (context, state) => const CupertinoPage(
                           child: DeviceTextureSelectionScreen(),
+                        ),
+                      ),
+                      GoRoute(
+                        path: Routes.clockAppearance.name,
+                        name: Routes.clockAppearance.name,
+                        parentNavigatorKey: menuNavigatorKey,
+                        pageBuilder: (context, state) => const CupertinoPage(
+                          child: ClockAppearanceScreen(),
                         ),
                       ),
                       GoRoute(

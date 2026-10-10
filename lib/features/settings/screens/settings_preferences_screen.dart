@@ -41,6 +41,7 @@ enum _SettingsDisplayItems {
   screenUsage,
   screenUsageWallpaper,
   alwaysShowClock,
+  clockAppearance,
   showOnLockScreen,
   showAppTutorial,
   rescanMusicFiles,
@@ -91,6 +92,8 @@ enum _SettingsDisplayItems {
         return context.localization.screenUsageWallpaperSettingTitle;
       case alwaysShowClock:
         return context.localization.alwaysShowClockSettingTitle;
+      case clockAppearance:
+        return context.localization.clockAppearanceSettingTitle;
       case showOnLockScreen:
         return context.localization.showOnLockScreenSettingTitle;
       case showAppTutorial:
@@ -223,6 +226,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         await ref
             .read(settingsPreferencesControllerProvider.notifier)
             .toggleAlwaysShowClock();
+        break;
+      case _SettingsDisplayItems.clockAppearance:
+        context.goNamed(Routes.clockAppearance.name);
         break;
       case _SettingsDisplayItems.showOnLockScreen:
         await ref
@@ -401,6 +407,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       case _SettingsDisplayItems.alwaysShowClock:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
             SplitScreenType.alwaysShowClock;
+        break;
+      case _SettingsDisplayItems.clockAppearance:
+        ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =
+            SplitScreenType.clockAppearance;
         break;
       case _SettingsDisplayItems.screenUsage:
         ref.read(splitScreenControllerProvider.notifier).changeSplitScreenType =

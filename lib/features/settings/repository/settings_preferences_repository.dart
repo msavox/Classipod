@@ -163,6 +163,19 @@ class SettingsPreferencesRepository {
         false;
   }
 
+  int? getClockColorValue() {
+    return _sharedPreferencesWithCache.getInt(
+      SharedPreferencesKeys.clockColor.name,
+    );
+  }
+
+  double getClockOpacity() {
+    return _sharedPreferencesWithCache.getDouble(
+          SharedPreferencesKeys.clockOpacity.name,
+        ) ??
+        1;
+  }
+
   Future<void> setLanguageLocaleCode({
     required String languageLocaleCode,
   }) async {
@@ -306,6 +319,25 @@ class SettingsPreferencesRepository {
     return _sharedPreferencesWithCache.setBool(
       SharedPreferencesKeys.alwaysShowClock.name,
       isClockAlwaysShown,
+    );
+  }
+
+  Future<void> setClockColorValue({required int? colorValue}) async {
+    if (colorValue == null) {
+      return _sharedPreferencesWithCache.remove(
+        SharedPreferencesKeys.clockColor.name,
+      );
+    }
+    return _sharedPreferencesWithCache.setInt(
+      SharedPreferencesKeys.clockColor.name,
+      colorValue,
+    );
+  }
+
+  Future<void> setClockOpacity({required double opacity}) async {
+    return _sharedPreferencesWithCache.setDouble(
+      SharedPreferencesKeys.clockOpacity.name,
+      opacity,
     );
   }
 

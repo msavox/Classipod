@@ -257,6 +257,14 @@ class _SplitScreenPlaceholderState extends ConsumerState<SplitScreenPlaceholder>
               ? context.localization.tileValueOn
               : context.localization.tileValueOff,
         );
+      } else if (splitScreenType == SplitScreenType.clockAppearance) {
+        splitScreenWidget = IconPreviewWidget(
+          titleText: context.localization.clockAppearanceSettingTitle,
+          icon: CupertinoIcons.paintbrush_fill,
+          contentText: currentSettings.clockColorValue == null
+              ? context.localization.useAutomaticClockColor
+              : context.localization.tileValueOn,
+        );
       } else if (splitScreenType == SplitScreenType.musicRoot) {
         splitScreenWidget = IconPreviewWidget(
           titleText: context.localization.musicRootSettingTitle,

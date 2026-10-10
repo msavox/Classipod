@@ -7,6 +7,9 @@ import 'package:classipod/features/settings/models/repeat_mode.dart';
 import 'package:classipod/features/settings/models/volume_mode.dart';
 
 class SettingsPreferencesModel {
+  /// A clock faded out entirely would look like a bug rather than a setting.
+  static const double minimumClockOpacity = 0.1;
+
   final String languageLocaleCode;
   final DeviceColor deviceColor;
   final ClickWheelSize clickWheelSize;
@@ -24,6 +27,11 @@ class SettingsPreferencesModel {
   final String? deviceTexture;
   final bool screenUsageKeepsWallpaper;
   final bool alwaysShowClock;
+
+  /// Colour the clock is drawn in, or null to let it follow the background it
+  /// sits on.
+  final int? clockColorValue;
+  final double clockOpacity;
   final int screenUsagePercentage;
   final bool showOnLockScreen;
   final bool fetchOnlineMusic;
@@ -47,6 +55,8 @@ class SettingsPreferencesModel {
     this.deviceTexture,
     this.screenUsageKeepsWallpaper = false,
     this.alwaysShowClock = false,
+    this.clockColorValue,
+    this.clockOpacity = 1,
     required this.screenUsagePercentage,
     required this.showOnLockScreen,
     required this.appTheme,
@@ -74,6 +84,9 @@ class SettingsPreferencesModel {
     bool clearDeviceTexture = false,
     bool? screenUsageKeepsWallpaper,
     bool? alwaysShowClock,
+    int? clockColorValue,
+    bool clearClockColor = false,
+    double? clockOpacity,
     int? screenUsagePercentage,
     bool? showOnLockScreen,
     bool? fetchOnlineMusic,
@@ -105,6 +118,10 @@ class SettingsPreferencesModel {
       screenUsageKeepsWallpaper:
           screenUsageKeepsWallpaper ?? this.screenUsageKeepsWallpaper,
       alwaysShowClock: alwaysShowClock ?? this.alwaysShowClock,
+      clockColorValue: clearClockColor
+          ? null
+          : (clockColorValue ?? this.clockColorValue),
+      clockOpacity: clockOpacity ?? this.clockOpacity,
       screenUsagePercentage:
           screenUsagePercentage ?? this.screenUsagePercentage,
       showOnLockScreen: showOnLockScreen ?? this.showOnLockScreen,
@@ -133,6 +150,8 @@ class SettingsPreferencesModel {
         other.deviceTexture == deviceTexture &&
         other.screenUsageKeepsWallpaper == screenUsageKeepsWallpaper &&
         other.alwaysShowClock == alwaysShowClock &&
+        other.clockColorValue == clockColorValue &&
+        other.clockOpacity == clockOpacity &&
         other.screenUsagePercentage == screenUsagePercentage &&
         other.showOnLockScreen == showOnLockScreen &&
         other.fetchOnlineMusic == fetchOnlineMusic &&
@@ -158,6 +177,8 @@ class SettingsPreferencesModel {
     deviceTexture,
     screenUsageKeepsWallpaper,
     alwaysShowClock,
+    clockColorValue,
+    clockOpacity,
     screenUsagePercentage,
     showOnLockScreen,
     appTheme,

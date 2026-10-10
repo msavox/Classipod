@@ -12,6 +12,7 @@ enum SplitScreenType {
   deviceTexture,
   screenUsageWallpaper,
   alwaysShowClock,
+  clockAppearance,
   clickWheelSize,
   clickWheelSensitivity,
   touchScreen,

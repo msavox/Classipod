@@ -77,6 +77,16 @@ class ScreenUsageWrapper extends ConsumerWidget {
         (settings) => settings.screenUsageKeepsWallpaper,
       ),
     );
+    final int? clockColorValue = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.clockColorValue,
+      ),
+    );
+    final double clockOpacity = ref.watch(
+      settingsPreferencesControllerProvider.select(
+        (settings) => settings.clockOpacity,
+      ),
+    );
     final DeviceAppearance appearance = ref.watch(deviceAppearanceProvider);
 
     final Widget body = Column(
@@ -92,6 +102,10 @@ class ScreenUsageWrapper extends ConsumerWidget {
                   child: LockScreenClock(
                     localeName: languageLocaleCode,
                     isAlwaysVisible: alwaysShowClock,
+                    color: clockColorValue == null
+                        ? null
+                        : Color(clockColorValue),
+                    opacity: clockOpacity,
                     // Only a pale wallpaper carried upwards needs dark hands;
                     // the blacked out area never does.
                     isOnLightBackground:

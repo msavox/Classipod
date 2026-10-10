@@ -84,6 +84,8 @@ class SettingsPreferencesControllerNotifier
       screenUsageKeepsWallpaper: settingsPreferencesRepository
           .getScreenUsageKeepsWallpaper(),
       alwaysShowClock: settingsPreferencesRepository.getAlwaysShowClock(),
+      clockColorValue: settingsPreferencesRepository.getClockColorValue(),
+      clockOpacity: settingsPreferencesRepository.getClockOpacity(),
       screenUsagePercentage: settingsPreferencesRepository
           .getScreenUsagePercentage(),
       showOnLockScreen: settingsPreferencesRepository.getShowOnLockScreen(),
@@ -424,6 +426,31 @@ class SettingsPreferencesControllerNotifier
     await ref
         .read(settingsPreferencesRepositoryProvider)
         .setAlwaysShowClock(isClockAlwaysShown: state.alwaysShowClock);
+  }
+
+  /// Passing null lets the clock pick a colour from the background it sits on.
+  Future<void> setClockColor(Color? color) async {
+    state = state.copyWith(
+      clockColorValue: color?.toARGB32(),
+      clearClockColor: color == null,
+    );
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setClockColorValue(colorValue: color?.toARGB32());
+  }
+
+  Future<void> setClockOpacity(double opacity) async {
+    final double sanitizedOpacity = opacity.clamp(
+      SettingsPreferencesModel.minimumClockOpacity,
+      1,
+    );
+    if (state.clockOpacity == sanitizedOpacity) {
+      return;
+    }
+    state = state.copyWith(clockOpacity: sanitizedOpacity);
+    await ref
+        .read(settingsPreferencesRepositoryProvider)
+        .setClockOpacity(opacity: sanitizedOpacity);
   }
 
   Future<void> toggleScreenUsageKeepsWallpaper() async {
